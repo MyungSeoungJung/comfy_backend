@@ -13,8 +13,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
-                        "http://127.0.0.1:3000"
-                ).allowedMethods("*");
+                        "http://127.0.0.1:3000",
+                        "http://172.30.1.98:3000"
+                ).allowedMethods("*")
+                 .allowedHeaders("*")
+                 .allowCredentials(true);
 
     }
 }
