@@ -20,7 +20,7 @@ public class AuthService {
     @Transactional
     public long createIdentity(SignupRequest signupReq){
         User user = User.builder()
-                .name(signupReq.getName())
+                .nickName(signupReq.getNickName())
                 .email(signupReq.getEmail())
                 .secret(hash.createHash(signupReq.getPassword()))
                 .build();
