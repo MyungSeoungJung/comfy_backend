@@ -60,6 +60,7 @@ public class AuthController {
         }
         String token = jwt.createToken(
                 user.get().getId());
+        System.out.println("토큰------------------------" + token);
         Cookie cookie = new Cookie("token", token);
         cookie.setPath("/");
         cookie.setMaxAge((int)(jwt.TOKEN_TIMEOUT/1000));
