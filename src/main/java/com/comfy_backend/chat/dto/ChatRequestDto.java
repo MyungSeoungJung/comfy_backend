@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.ZonedDateTime;
 
 @Data
-public class ChatRequestDTO {
+public class ChatRequestDto {
     private Long myId;
 
     private Long toUserId;

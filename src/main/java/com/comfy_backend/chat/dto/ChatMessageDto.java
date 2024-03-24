@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatMessageDTO {
+public class ChatMessageDto {
     // 메시지  타입 : 입장, 채팅
     public enum MessageType{
         ENTER, TALK

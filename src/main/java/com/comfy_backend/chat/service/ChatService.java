@@ -1,6 +1,6 @@
 package com.comfy_backend.chat.service;
 
-import com.comfy_backend.chat.dto.ChatRequestDTO;
+import com.comfy_backend.chat.dto.ChatRequestDto;
 import com.comfy_backend.chat.entity.ChatMessage;
 import com.comfy_backend.chat.entity.ChatRoom;
 import com.comfy_backend.chat.repository.ChatRepository;
@@ -25,7 +25,7 @@ public class ChatService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createRoom(ChatRequestDTO dto) {
+    public void createRoom(ChatRequestDto dto) {
         User toUser = userRepository.findById(dto.getToUserId()).orElseThrow();
         User fromUser = userRepository.findById(dto.getMyId()).orElseThrow();
 
