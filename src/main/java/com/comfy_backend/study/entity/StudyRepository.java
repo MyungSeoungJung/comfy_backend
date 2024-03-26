@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface StudyRepository extends JpaRepository<Study, Long> {
 
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByCreatorNickName(String creatorNickName);
 }

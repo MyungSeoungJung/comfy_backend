@@ -19,9 +19,7 @@ public class Study {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_id")
     private Long id;
-    @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
     private String content;
     private String recruitStatus;
     private String creatorNickName;

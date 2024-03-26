@@ -7,19 +7,19 @@ import com.comfy_backend.tag.hashTag.service.HashTagService;
 import com.comfy_backend.tag.studyHashTagMapping.entity.HashTagMapping;
 import com.comfy_backend.tag.studyHashTagMapping.entity.StudyHashTagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class StudyHashTagService {
     @Autowired
     HashTagService hashTagService;
-
     @Autowired
     StudyHashTagRepository studyHashTagRepository;
 
     public void saveHashTag(Study study, List<String> tagNames) {
         // 만약 태그명 리스트가 비어있다면 메서드를 종료합니다.
-        if(tagNames.size() == 0) return;
+        if(tagNames == null || tagNames.isEmpty()) return;
 
         // 태그명 리스트를 스트림으로 변환하고, 각 태그명에 대해 다음 작업을 수행
         tagNames.stream()

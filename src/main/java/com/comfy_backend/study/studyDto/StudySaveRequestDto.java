@@ -2,9 +2,11 @@ package com.comfy_backend.study.studyDto;
 
 import com.comfy_backend.study.entity.Study;
 import com.comfy_backend.user.entity.User;
+import lombok.Data;
 import lombok.Getter;
 import java.util.List;
 
+@Data
 public class StudySaveRequestDto {
     private String title;
 
@@ -13,9 +15,11 @@ public class StudySaveRequestDto {
 
     public Study toEntity(User user) {
         return Study.builder()
-                .title(title)
-                .content(content)
+                .title(this.title)
+                .content(this.content)
                 .creatorNickName(user.getNickName())
+                .creatorId(user.getId())
+//               모집중
                 .build();
     }
 
