@@ -8,7 +8,8 @@ import java.util.List;
 
 //https://s7won.tistory.com/3
 
-@Data
+@Getter
+//@Data
 @NoArgsConstructor
 @Entity
 public class HashTag extends BaseEntity {

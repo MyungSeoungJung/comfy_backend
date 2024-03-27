@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -23,13 +24,10 @@ public class Study {
     private String content;
     private String recruitStatus;
     private String creatorNickName;
-    private int LikeCount;
+
+//    private int LikeCount; 좋아요 기능 따로 빼기
     private long creatorId;
-    private String createdTime;
+    private LocalDateTime createdTime;
     private long totalComment;
-
-
-
-
 
 }

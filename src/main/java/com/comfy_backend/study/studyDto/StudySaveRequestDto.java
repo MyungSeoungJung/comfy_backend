@@ -4,6 +4,8 @@ import com.comfy_backend.study.entity.Study;
 import com.comfy_backend.user.entity.User;
 import lombok.Data;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,6 +20,8 @@ public class StudySaveRequestDto {
                 .title(this.title)
                 .content(this.content)
                 .creatorNickName(user.getNickName())
+                .recruitStatus("모집중")
+                .createdTime(LocalDateTime.now())
                 .creatorId(user.getId())
 //               모집중
                 .build();

@@ -9,4 +9,6 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
 
     Optional<User> findByCreatorNickName(String creatorNickName);
+
+
 }
