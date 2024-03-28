@@ -31,7 +31,8 @@ public class AuthController {
     private String loginUrl;
     @Value("${app.home.url}")
     private String homeUrl;
-
+    @Value("${app.cookie.domain}")
+    private String cookieDomain;
     @PostMapping("/signUp")
     public ResponseEntity signUp (@RequestBody SignupRequest signupRequest){
         long userId = authService.createIdentity(signupRequest);
@@ -64,7 +65,7 @@ public class AuthController {
         Cookie cookie = new Cookie("token", token);
         cookie.setPath("/");
         cookie.setMaxAge((int)(jwt.TOKEN_TIMEOUT/1000));
-        cookie.setDomain("localhost");
+        cookie.setDomain(this.cookieDomain);
         res.addCookie(cookie);
     return ResponseEntity
             .status(HttpStatus.FOUND)

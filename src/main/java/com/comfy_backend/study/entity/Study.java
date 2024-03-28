@@ -25,7 +25,6 @@ public class Study {
     private String recruitStatus;
     private String creatorNickName;
 
-//    private int LikeCount; 좋아요 기능 따로 빼기
     private long creatorId;
     private LocalDateTime createdTime;
     private long totalComment;
