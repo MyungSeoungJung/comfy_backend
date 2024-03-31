@@ -11,4 +11,5 @@ public interface HeartRepository extends JpaRepository<Heart, Long> {
 
     Heart findById(long id);
     Optional<Heart> findByUserAndStudy(User user, Study study);
+
 }

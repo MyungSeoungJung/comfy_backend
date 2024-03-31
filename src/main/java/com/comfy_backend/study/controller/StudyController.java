@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/study")
@@ -36,5 +34,17 @@ public class StudyController {
     public List<Study> getStudy(){
         List<Study> list = studyRepository.findAll();
         return list;
+    }
+
+    @GetMapping("/studyDetailPage")
+    public ResponseEntity<Map<String, Object>> getStudyDetail(@RequestParam long id) {
+        Optional<Study> study = studyRepository.findById(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("creatorNickName" , study.get().getCreatorNickName());
+        response.put("createdTime" , study.get().getCreatedTime());
+        response.put("title" , study.get().getTitle());
+        response.put("content" , study.get().getContent());
+        response.put("totalHearts", study.get().getTotalHeart());
+        return ResponseEntity.ok().body(response);
     }
 }

@@ -1,5 +1,7 @@
 package com.comfy_backend.heart.controller;
 
+import com.comfy_backend.auth.Auth;
+import com.comfy_backend.auth.AuthProfile;
 import com.comfy_backend.heart.entity.HeartRequestDto;
 import com.comfy_backend.heart.heartService.HeartService;
 import lombok.RequiredArgsConstructor;
@@ -15,18 +17,25 @@ import org.springframework.web.bind.annotation.*;
 public class HeartController {
     @Autowired
     HeartService heartService;
+
+    @Auth
     @PostMapping
-    public ResponseEntity<?> insert(@RequestBody HeartRequestDto heartRequestDto) {
+    public ResponseEntity<?> insert(@RequestParam long id, @RequestAttribute AuthProfile authProfile) {
+        HeartRequestDto heartRequestDto = new HeartRequestDto(authProfile.getId(), id);
+        System.out.println(id);
         ResponseEntity<?> response =  heartService.insert(heartRequestDto);
         if (response.getStatusCode() == HttpStatus.CONFLICT) {
 
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+
         return  ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Auth
     @DeleteMapping
-    public void delete(@RequestBody HeartRequestDto heartRequestDto) {
+    public void delete(@RequestParam long id, @RequestAttribute AuthProfile authProfile) {
+        HeartRequestDto heartRequestDto = new HeartRequestDto(authProfile.getId(), id);
         heartService.delete(heartRequestDto);
     }
 
