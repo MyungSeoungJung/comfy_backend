@@ -21,6 +21,7 @@ public class Study {
     @Column(name = "study_id")
     private Long id;
     private String title;
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     private String recruitStatus;
     private String creatorNickName;
