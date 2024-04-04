@@ -23,6 +23,7 @@ public class AuthService {
                 .nickName(signupReq.getNickName())
                 .email(signupReq.getEmail())
                 .secret(hash.createHash(signupReq.getPassword()))
+                .profileImage(signupReq.getProfileImage())
                 .build();
 
         userRepository.save(user);

@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/studyComment")
@@ -45,11 +42,27 @@ public class StudyCommentController {
         studyCommentRepository.save(studyComment);
         return ResponseEntity.ok().build();
     }
-    @GetMapping ("/getComment")
-    public ResponseEntity<List<StudyComment>> getComment (@RequestParam long id) {
+    @GetMapping("/getComment")
+    public ResponseEntity<List<StudyCommentDto>> getComment(@RequestParam long id) {
         Optional<Study> study = studyRepository.findById(id);
-        List<StudyComment> StudyComment = studyCommentRepository.findByStudy(study);
-        return ResponseEntity.status(HttpStatus.OK).body(StudyComment);
+        if (study.isPresent()) {
+            List<StudyComment> studyComments = studyCommentRepository.findByStudy(study);
+            List<StudyCommentDto> commentDtos = new ArrayList<>();
+            for (StudyComment comment : studyComments) {
+                StudyCommentDto commentDto = new StudyCommentDto();
+                commentDto.setId(comment.getId());
+                commentDto.setContent(comment.getContent());
+
+                Optional<User> user = userRepository.findById(comment.getUserId());
+                commentDto.setUserNickName(user.get().getNickName());
+                commentDto.setUserId(user.get().getId());
+                commentDto.setUserImg(user.get().getProfileImage());
+                commentDtos.add(commentDto);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(commentDtos);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
 }
