@@ -27,11 +27,12 @@ public class UserController {
     UserRepository userRepository;
 
     @Auth
-    @GetMapping("getUserImg")
-    public ResponseEntity<Map<String, Object>> getUserImg(@RequestAttribute AuthProfile authProfile){
+    @GetMapping("getUserInfo")
+    public ResponseEntity<Map<String, Object>> getUserInfo(@RequestAttribute AuthProfile authProfile){
         Optional<User> user = userRepository.findById(authProfile.getId());
         Map<String, Object> response = new HashMap<>();
         response.put("userImg", user.get().getProfileImage());
+        response.put("userNickName" ,user.get().getNickName());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

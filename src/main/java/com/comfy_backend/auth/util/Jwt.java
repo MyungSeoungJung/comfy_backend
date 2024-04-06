@@ -12,8 +12,7 @@ public class Jwt {
 
     public String secret = "this-is-top-secret";
 
-    public final int TOKEN_TIMEOUT = 1000 + 60 * 60 * 24 * 7;
-
+    public final long TOKEN_TIMEOUT = 1000 * 60 * 60 * 24 * 7;
 
     public String createToken(long id){
         Date now = new Date();
