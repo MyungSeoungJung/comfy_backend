@@ -10,6 +10,7 @@ import com.comfy_backend.study.service.StudyService;
 import com.comfy_backend.study.studyDto.StudySaveRequestDto;
 import com.comfy_backend.tag.hashTag.entity.HashTag;
 import com.comfy_backend.tag.studyHashTagMapping.entity.HashTagMapping;
+import com.comfy_backend.tag.studyHashTagMapping.entity.StudyHashTagRepository;
 import com.comfy_backend.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +27,17 @@ public class StudyController {
     private StudyRepository studyRepository;
     @Autowired
     private HeartRepository heartRepository;
+    @Autowired
+    private StudyHashTagRepository studyHashTagRepository;
 
     @Auth
     @PostMapping (value = "/addStudy")
-    public ResponseEntity<Map<String, Objects>> addStudy(@RequestBody StudySaveRequestDto studySaveRequestDto, @RequestAttribute AuthProfile authProfile) {
+    public ResponseEntity<Long> addStudy(@RequestBody StudySaveRequestDto studySaveRequestDto, @RequestAttribute AuthProfile authProfile) {
         System.out.println(authProfile.getId());
         User user = new User();
         user.setId(authProfile.getId());
         Long savedStudyId = studyService.save(studySaveRequestDto, user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(savedStudyId);
     }
 
     @GetMapping(value = "/getStudy")
@@ -60,10 +63,8 @@ public class StudyController {
                 HashTag hashTag = hashTagMapping.getHashTag();
                 studyWithTagDto.getTagNames().add(hashTag.getTagName());
             }
-
             studyWithTagDtos.add(studyWithTagDto);
         }
-
         return studyWithTagDtos;
     }
 
@@ -71,14 +72,30 @@ public class StudyController {
     @GetMapping("/studyDetailPage")
     public ResponseEntity<Map<String, Object>> getStudyDetail(@RequestParam long id, @RequestAttribute AuthProfile authProfile) {
         boolean userLikedStudy = heartRepository.isUserLikedStudy(authProfile.getId(), id); // 좋아요 누른 게시물인지
-        Optional<Study> study = studyRepository.findById(id);
-        Map<String, Object> response = new HashMap<>();
-        response.put("creatorNickName" , study.get().getCreatorNickName());
-        response.put("createdTime" , study.get().getCreatedTime());
-        response.put("title" , study.get().getTitle());
-        response.put("content" , study.get().getContent());
-        response.put("totalHearts", study.get().getTotalHeart());
-        response.put("userLikedStudy", userLikedStudy);
-        return ResponseEntity.ok().body(response);
+        Optional<Study> studyOptional = studyRepository.findById(id);
+
+        if (studyOptional.isPresent()) {
+            Study study = studyOptional.get();
+            Map<String, Object> response = new HashMap<>();
+            response.put("creatorNickName", study.getCreatorNickName());
+            response.put("createdTime", study.getCreatedTime());
+            response.put("title", study.getTitle());
+            response.put("content", study.getContent());
+            response.put("totalHearts", study.getTotalHeart());
+            response.put("userLikedStudy", userLikedStudy);
+
+            // 연관된 해시태그 정보 추가
+            List<String> tagNames = new ArrayList<>();
+            for (HashTagMapping hashTagMapping : study.getHashTagMappings()) {
+                HashTag hashTag = hashTagMapping.getHashTag();
+                tagNames.add(hashTag.getTagName());
+            }
+            response.put("hashTags", tagNames);
+
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 }
