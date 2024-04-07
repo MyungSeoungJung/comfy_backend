@@ -1,6 +1,7 @@
 package com.comfy_backend.study.entity;
 
         import com.comfy_backend.tag.studyHashTagMapping.entity.HashTagMapping;
+        import com.fasterxml.jackson.annotation.JsonIgnore;
         import jakarta.persistence.*;
         import lombok.AllArgsConstructor;
         import lombok.Builder;
@@ -33,6 +34,7 @@ public class Study {
     private long totalComment;
     private long totalHeart;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashTagMapping> hashTagMappings;
 }

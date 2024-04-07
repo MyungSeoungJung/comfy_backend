@@ -5,13 +5,15 @@ import com.comfy_backend.auth.AuthProfile;
 import com.comfy_backend.heart.entity.HeartRepository;
 import com.comfy_backend.study.entity.Study;
 import com.comfy_backend.study.entity.StudyRepository;
-import com.comfy_backend.study.entity.studyWithTagDto.StudyWithTagDto;
+import com.comfy_backend.study.entity.dto.PopularStudyDto;
+import com.comfy_backend.study.entity.dto.StudyWithTagDto;
 import com.comfy_backend.study.service.StudyService;
 import com.comfy_backend.study.studyDto.StudySaveRequestDto;
 import com.comfy_backend.tag.hashTag.entity.HashTag;
 import com.comfy_backend.tag.studyHashTagMapping.entity.HashTagMapping;
 import com.comfy_backend.tag.studyHashTagMapping.entity.StudyHashTagRepository;
 import com.comfy_backend.user.entity.User;
+import com.comfy_backend.user.entity.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +31,11 @@ public class StudyController {
     private HeartRepository heartRepository;
     @Autowired
     private StudyHashTagRepository studyHashTagRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Auth
-    @PostMapping (value = "/addStudy")
+    @PostMapping(value = "/addStudy")
     public ResponseEntity<Long> addStudy(@RequestBody StudySaveRequestDto studySaveRequestDto, @RequestAttribute AuthProfile authProfile) {
         System.out.println(authProfile.getId());
         User user = new User();
@@ -96,6 +100,32 @@ public class StudyController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+    @GetMapping("/popularStudy")
+    public ResponseEntity<List<PopularStudyDto>> popularStudy() {
+        // 토탈 하트가 높은 상위 5개 스터디 가져오기
+        List<Study> studies = studyRepository.findTop5ByTotalHeartGreaterThanOrderByTotalHeartDesc();
+        // DTO 리스트 생성
+        List<PopularStudyDto> popularStudyDtos = new ArrayList<>();
+
+        // 상위 5개 스터디를 순회하면서 PopularStudyDto 객체 생성
+        for (Study study : studies) {
+            // 스터디 작성자로부터 사용자 이미지 가져오기
+            long creatorId = study.getCreatorId();
+            Optional<User> user = userRepository.findById(creatorId);
+
+            // PopularStudyDto 객체 생성 및 리스트에 추가
+            PopularStudyDto popularStudyDto = PopularStudyDto.builder()
+                    .userNickName(study.getCreatorNickName())
+                    .userImg(user.get().getProfileImage())
+                    .content(study.getContent())
+                    .build();
+            popularStudyDtos.add(popularStudyDto);
+        }
+
+        return ResponseEntity.ok().body(popularStudyDtos);
     }
 
 }

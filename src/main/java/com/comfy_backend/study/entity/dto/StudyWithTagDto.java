@@ -1,4 +1,4 @@
-package com.comfy_backend.study.entity.studyWithTagDto;
+package com.comfy_backend.study.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
