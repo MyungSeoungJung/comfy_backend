@@ -120,7 +120,7 @@ public class StudyController {
             PopularStudyDto popularStudyDto = PopularStudyDto.builder()
                     .userNickName(study.getCreatorNickName())
                     .userImg(user.get().getProfileImage())
-                    .content(study.getContent())
+                    .title(study.getTitle())
                     .build();
             popularStudyDtos.add(popularStudyDto);
         }

@@ -21,6 +21,7 @@ public class User {
     private String profileImage;
 
     private String nickName;
+    private String introduce;
     @Column(length = 500)
     private String secret;
 
