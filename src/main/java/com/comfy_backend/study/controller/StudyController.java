@@ -77,7 +77,8 @@ public class StudyController {
     public ResponseEntity<Map<String, Object>> getStudyDetail(@RequestParam long id, @RequestAttribute AuthProfile authProfile) {
         boolean userLikedStudy = heartRepository.isUserLikedStudy(authProfile.getId(), id); // 좋아요 누른 게시물인지
         Optional<Study> studyOptional = studyRepository.findById(id);
-
+        long userId = studyOptional.get().getCreatorId();
+        Optional<User> user = userRepository.findById(userId);
         if (studyOptional.isPresent()) {
             Study study = studyOptional.get();
             Map<String, Object> response = new HashMap<>();
@@ -87,7 +88,8 @@ public class StudyController {
             response.put("content", study.getContent());
             response.put("totalHearts", study.getTotalHeart());
             response.put("userLikedStudy", userLikedStudy);
-
+            response.put("writerImg", user.get().getProfileImage());
+            response.put("writerId", user.get().getId());
             // 연관된 해시태그 정보 추가
             List<String> tagNames = new ArrayList<>();
             for (HashTagMapping hashTagMapping : study.getHashTagMappings()) {

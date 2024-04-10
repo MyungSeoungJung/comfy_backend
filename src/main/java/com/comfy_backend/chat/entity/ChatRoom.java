@@ -25,8 +25,8 @@ public class ChatRoom {
     private Long toUserId;
 
     private String toUserNick;
-
-    private String toUserImg;
+    @Column(columnDefinition = "LONGTEXT")
+    private String toUserImg; //이미지를 좀 작게해야됨
 
     private Long roomId;
 

@@ -32,6 +32,7 @@ public class UserController {
         response.put("userImg", user.get().getProfileImage());
         response.put("userNickName" ,user.get().getNickName());
         response.put("introduce" ,user.get().getIntroduce());
+        response.put("userId" ,user.get().getId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
