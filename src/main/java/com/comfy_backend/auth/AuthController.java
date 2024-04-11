@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -34,9 +36,26 @@ public class AuthController {
     @Value("${app.cookie.domain}")
     private String cookieDomain;
     @PostMapping("/signUp")
-    public ResponseEntity signUp (@RequestBody SignupRequest signupRequest){
+    public ResponseEntity signUp (@RequestParam("email") String email,
+                                  @RequestParam("nickName") String nickName,
+                                  @RequestParam("password") String password,
+                                  @RequestParam("profileImage") MultipartFile profileImage) {
+        try{
+            System.out.println(email);
+            System.out.println(profileImage);
+           SignupRequest signupRequest = new SignupRequest();
+            signupRequest.setEmail(email);
+            signupRequest.setNickName(nickName);
+            signupRequest.setPassword(password);
+            signupRequest.setProfileImage(profileImage);
+
         long userId = authService.createIdentity(signupRequest);
-     return ResponseEntity.status(HttpStatus.OK).body(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(userId);
+        }
+        catch (IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 중 오류가 발생했습니다.");
+        }
     }
 
     @PostMapping("/signIn")

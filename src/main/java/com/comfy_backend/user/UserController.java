@@ -7,11 +7,15 @@ import com.comfy_backend.user.entity.User;
 import com.comfy_backend.user.entity.UserRepository;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("user")
 public class UserController {
-
+    private final String POST_FILE_PATH = "files/profileImage";
     @Autowired
     UserRepository userRepository;
 
@@ -47,5 +51,20 @@ public class UserController {
         modifyUser.setProfileImage(userInfo.getUserImg());
         userRepository.save(modifyUser);
         return null;
+    }
+
+    @GetMapping("/file/{uuidFilename}")
+    public ResponseEntity<Resource> getImage(@PathVariable("uuidFilename") String uuidFilename) throws IOException {
+        Path imagePath = Paths.get(POST_FILE_PATH, uuidFilename); // 이미지 파일 경로
+
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+
+        ByteArrayResource resource = new ByteArrayResource(imageBytes);
+        System.out.println("resource"+ resource);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + uuidFilename)
+                .contentType(MediaType.IMAGE_PNG)
+                .contentLength(imageBytes.length)
+                .body(resource);
     }
 }
