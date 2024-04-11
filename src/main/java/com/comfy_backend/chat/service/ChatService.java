@@ -1,5 +1,6 @@
 package com.comfy_backend.chat.service;
 
+import com.comfy_backend.chat.dto.ChatListResponseDto;
 import com.comfy_backend.chat.dto.ChatRequestDto;
 import com.comfy_backend.chat.entity.ChatMessage;
 import com.comfy_backend.chat.entity.ChatRoom;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -97,6 +100,29 @@ public class ChatService {
             chatRepository.save(msg);
         }
 
+
+    }
+
+
+    @Transactional
+    public ChatListResponseDto getList(long id){
+        List<ChatRoom> myRooms = joinRoomRepository.findByMyUserIdOrderByLastMsgTime(id);
+        Optional<User> user = userRepository.findById(id);
+
+    return ChatListResponseDto.builder()
+            .myUser(user.orElse(null))
+            .rooms(
+                    myRooms.stream().map(room -> ChatListResponseDto.Room.builder()
+                            .toUserId(room.getToUserId())
+                            .toUserNick(userRepository.findById(room.getToUserId()).map(User::getNickName).orElse(null))
+                            .toUserImg(userRepository.findById(room.getToUserId()).map(User::getProfileImage).orElse(null))
+                            .roomId(room.getRoomId())
+                            .isRead(room.getIsRead())
+                            .lastMsg(room.getLastMsg())
+                            .lastMsgTime(room.getLastMsgTime())
+                            .build()).toList()
+            )
+            .build();
 
     }
 }

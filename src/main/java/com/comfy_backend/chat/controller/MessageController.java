@@ -1,19 +1,28 @@
 package com.comfy_backend.chat.controller;
 
 
+import com.comfy_backend.auth.Auth;
+import com.comfy_backend.auth.AuthProfile;
+import com.comfy_backend.chat.dto.ChatListResponseDto;
 import com.comfy_backend.chat.dto.ChatRequestDto;
 import com.comfy_backend.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@RestController
 public class MessageController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatService chatService;
@@ -35,4 +44,10 @@ public class MessageController {
         }
     }
 
+    @Auth
+    @GetMapping("/chat/chatList")
+    public ChatListResponseDto chatList (@RequestAttribute AuthProfile authProfile){
+
+        return chatService.getList(authProfile.getId());
+    }
 }
