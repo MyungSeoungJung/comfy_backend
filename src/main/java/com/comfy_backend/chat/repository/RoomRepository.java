@@ -8,5 +8,5 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<ChatRoom,Long> {
     Long countByRoomId(Long roomid);
     ChatRoom findByRoomIdAndMyUserId(Long roomid, Long userid);
-
+    List<ChatRoom> findByMyUserIdOrderByLastMsgTime(Long userid);
 }

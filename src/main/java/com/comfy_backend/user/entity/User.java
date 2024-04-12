@@ -17,12 +17,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String email;
+    @Column(columnDefinition = "LONGTEXT")
     private String profileImage;
 
-    private String nickname;
+    private String nickName;
+    private String introduce;
     @Column(length = 500)
     private String secret;
-    private String name;
-
 
 }
