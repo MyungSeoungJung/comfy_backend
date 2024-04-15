@@ -46,7 +46,6 @@ public class MessageController {
     @Auth
     @GetMapping("/chat/chatList")
     public ChatListResponseDto chatList (@RequestAttribute AuthProfile authProfile){
-
         return chatService.getList(authProfile.getId());
     }
 
@@ -54,5 +53,11 @@ public class MessageController {
     public ChatLogResponseDto getRoom(@RequestBody ChatRequestDto dto) {
         System.out.println("로그 조회성공");
         return chatService.getRoom(dto.getRoomId());
+    }
+    @Auth
+    @PostMapping("/chat/read")
+    public void read(@RequestAttribute AuthProfile authProfile, @RequestBody ChatRequestDto dto) {
+        System.out.println(dto);
+        chatService.isRead(authProfile.getId(), dto.getRoomId());
     }
 }

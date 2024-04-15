@@ -141,5 +141,20 @@ public class ChatService {
                 ).build();
         return messages;
     }
+    public void isRead(Long userId, Long roomId) {
+        ChatRoom room = joinRoomRepository.findByRoomIdAndMyUserId(roomId, userId);
+        ChatRoom updateRoom = room.builder()
+                .id(room.getId())
+                .myUserId(room.getMyUserId())
+                .toUserId(room.getToUserId())
+                .toUserNick(room.getToUserNick())
+                .toUserImg(room.getToUserImg())
+                .roomId(room.getRoomId())
+                .lastMsg(room.getLastMsg())
+                .isRead(true)
+                .lastMsgTime(room.getLastMsgTime())
+                .build();
+        joinRoomRepository.save(updateRoom);
+    }
 
 }

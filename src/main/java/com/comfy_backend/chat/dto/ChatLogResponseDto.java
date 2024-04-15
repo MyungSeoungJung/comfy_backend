@@ -1,7 +1,5 @@
 package com.comfy_backend.chat.dto;
-
 import lombok.*;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 
