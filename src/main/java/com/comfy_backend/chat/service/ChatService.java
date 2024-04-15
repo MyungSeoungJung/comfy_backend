@@ -1,6 +1,7 @@
 package com.comfy_backend.chat.service;
 
 import com.comfy_backend.chat.dto.ChatListResponseDto;
+import com.comfy_backend.chat.dto.ChatLogResponseDto;
 import com.comfy_backend.chat.dto.ChatRequestDto;
 import com.comfy_backend.chat.entity.ChatMessage;
 import com.comfy_backend.chat.entity.ChatRoom;
@@ -125,4 +126,35 @@ public class ChatService {
             .build();
 
     }
+    public ChatLogResponseDto getRoom(Long roomId) {
+        List<ChatMessage> msgs = chatRepository.findByRoomIdOrderByCreatedAtDesc(roomId);
+        ChatLogResponseDto messages = ChatLogResponseDto.builder()
+                .Messages(
+                        msgs.stream().map(msg -> ChatLogResponseDto.Message.builder()
+                                .id(msg.getId())
+                                .userid(msg.getUser().getId())
+                                .profileImg(msg.getUser().getProfileImage())
+                                .roomId(msg.getRoomId())
+                                .content(msg.getContent())
+                                .createdAt(msg.getCreatedAt())
+                                .build()).toList()
+                ).build();
+        return messages;
+    }
+    public void isRead(Long userId, Long roomId) {
+        ChatRoom room = joinRoomRepository.findByRoomIdAndMyUserId(roomId, userId);
+        ChatRoom updateRoom = room.builder()
+                .id(room.getId())
+                .myUserId(room.getMyUserId())
+                .toUserId(room.getToUserId())
+                .toUserNick(room.getToUserNick())
+                .toUserImg(room.getToUserImg())
+                .roomId(room.getRoomId())
+                .lastMsg(room.getLastMsg())
+                .isRead(true)
+                .lastMsgTime(room.getLastMsgTime())
+                .build();
+        joinRoomRepository.save(updateRoom);
+    }
+
 }
