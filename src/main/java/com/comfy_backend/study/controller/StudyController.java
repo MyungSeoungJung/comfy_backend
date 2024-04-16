@@ -15,6 +15,9 @@ import com.comfy_backend.tag.studyHashTagMapping.entity.StudyHashTagRepository;
 import com.comfy_backend.user.entity.User;
 import com.comfy_backend.user.entity.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -128,6 +131,40 @@ public class StudyController {
         }
 
         return ResponseEntity.ok().body(popularStudyDtos);
+    }
+
+    @GetMapping(value = "/getStudyPaging")
+    public Page<StudyWithTagDto> getStudyPaging(@RequestParam int page, @RequestParam int size){
+        page = page - 1; // 페이지 번호를 0부터 시작하도록 조정
+        System.out.println(page + "+" + size);
+        Sort sort = Sort.by("id").ascending();
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        Page<Study> studyPage = studyRepository.findAll(pageRequest);
+
+        // Study 페이지를 StudyWithTagDto 페이지로 변환
+        Page<StudyWithTagDto> studyWithTagDtoPage = studyPage.map(study -> {
+            StudyWithTagDto studyWithTagDto = StudyWithTagDto.builder()
+                    .id(study.getId())
+                    .title(study.getTitle())
+                    .content(study.getContent())
+                    .recruitStatus(study.getRecruitStatus())
+                    .creatorNickName(study.getCreatorNickName())
+                    .createdTime(study.getCreatedTime())
+                    .totalComment(study.getTotalComment())
+                    .totalHeart(study.getTotalHeart())
+                    .tagNames(new ArrayList<>()) // 태그 이름을 저장할 리스트 초기화
+                    .build();
+
+            // 해당 스터디의 태그들을 가져와서 StudyWithTagDto에 추가
+            for (HashTagMapping hashTagMapping : study.getHashTagMappings()) {
+                HashTag hashTag = hashTagMapping.getHashTag();
+                studyWithTagDto.getTagNames().add(hashTag.getTagName());
+            }
+            return studyWithTagDto;
+        });
+
+        return studyWithTagDtoPage;
     }
 
 }
