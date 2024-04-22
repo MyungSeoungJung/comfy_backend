@@ -40,8 +40,14 @@ public class StudyCommentController {
         studyComment.setContent(studyComment.getContent());
         studyComment.setNickName(user.get().getNickName());
         studyCommentRepository.save(studyComment);
+        // 게시물 댓글 총
+        Study totalCommentStudy = study.get();
+        totalCommentStudy.setTotalComment(totalCommentStudy.getTotalComment() + 1);
+        studyRepository.save(totalCommentStudy);
         return ResponseEntity.ok().build();
     }
+
+
     @GetMapping("/getComment")
     public ResponseEntity<List<StudyCommentDto>> getComment(@RequestParam long id) {
         Optional<Study> study = studyRepository.findById(id);
