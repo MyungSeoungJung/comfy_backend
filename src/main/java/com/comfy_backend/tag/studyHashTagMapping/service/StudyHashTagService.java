@@ -18,7 +18,7 @@ public class StudyHashTagService {
     StudyHashTagRepository studyHashTagRepository;
 
     public void saveHashTag(Study study, List<String> tagNames) {
-        // 만약 태그명 리스트가 비어있다면 메서드를 종료합니다.
+        // 만약 태그명 리스트가 비어있다면 메서드를 종료
         if(tagNames == null || tagNames.isEmpty()) return;
 
         // 태그명 리스트를 스트림으로 변환하고, 각 태그명에 대해 다음 작업을 수행
@@ -27,16 +27,37 @@ public class StudyHashTagService {
                 .map(hashTag ->
                        hashTagService.findByTagName(hashTag)
                                 .orElseGet(() -> hashTagService.save(hashTag)))
-                // 질문과 해시태그를 연결하는 작업을 수행합니다.
+                // 질문과 해시태그를 연결하는 작업
                 .forEach(hashTag -> mapHashtagToQuestion(study, hashTag));
     }
     private Long mapHashtagToQuestion(Study study, HashTag hashTag) {
 
         return studyHashTagRepository.save(new HashTagMapping(study,hashTag)).getId();
     }
+//    해시태그 업데이트
+    public void updateHashTagsForStudy(Study study, List<String> newTagNames) {
+        // 새로운 태그 목록이 비어있으면 해당 스터디의 모든 기존 매핑을 삭제하고 리턴
+        if (newTagNames == null || newTagNames.isEmpty()) {
+            removeAllHashTagsForStudy(study);
+            return;
+        }
+
+        // 해당 스터디의 모든 기존 매핑을 삭제.
+        removeAllHashTagsForStudy(study);
+
+        // 새로운 태그 목록을 이용하여 새로운 해시태그 매핑 새로 만들기
+        saveHashTag(study, newTagNames);
+    }
+//    해시태그 지우기
+    private void removeAllHashTagsForStudy(Study study) {
+//        맵핑 레파지토리에서 스터디 찾고 해당 스터디 맵핑 지우기
+        List<HashTagMapping> existingMappings = studyHashTagRepository.findAllByStudy(study);
+        studyHashTagRepository.deleteAll(existingMappings);
+    }
+
+
 
     public List<HashTagMapping> findHashtagListByStudy(Study study) {
-
         return studyHashTagRepository.findAllByStudy(study);
     }
 }

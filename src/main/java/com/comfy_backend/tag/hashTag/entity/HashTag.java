@@ -9,7 +9,7 @@ import java.util.List;
 //https://s7won.tistory.com/3
 
 @Getter
-//@Data
+@Setter
 @NoArgsConstructor
 @Entity
 public class HashTag extends BaseEntity {
